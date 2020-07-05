@@ -1,5 +1,5 @@
 # Use a lighter version of Node as a parent image
-FROM mhart/alpine-node:8.11.4
+FROM node:12-alpine
 
 # Set the working directory to /api
 WORKDIR /api
@@ -13,8 +13,8 @@ RUN npm install
 # Copy the current directory contents into the container at /api
 COPY . /api/
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
 
 # Run the app when the container launches
-CMD ["npm", "start"]
+CMD /wait && npm start

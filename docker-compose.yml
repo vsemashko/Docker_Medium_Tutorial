@@ -1,30 +1,30 @@
-version: "2"
+version: "3.5"
 services:
     client:
-        image: mhart/alpine-node:6.8.0
+        build: ./client
         restart: always
         ports:
             - "3000:3000"
-        working_dir: /client/src/app
         volumes:
-            - ./client:/client/src/app
-        entrypoint: ["npm", "start"]
+            - ./client:/app
         links:
             - api
         networks:
             - webappnetwork
     api:
-        image: webapp-api
+        build: ./api
+        container_name: node-tutorial-api
         restart: always
         ports:
             - "9000:9000"
         volumes:
             - ./api:/api
-            - /api/node_modules
         depends_on:
             - mongodb
         networks:
             - webappnetwork
+        environment:
+            WAIT_HOSTS: mongodb:27017
     mongodb:
         image: mongo
         restart: always
@@ -33,7 +33,7 @@ services:
             - ./data-node:/data/db
         ports:
             - 27017:27017
-        command: mongod --noauth --smallfiles
+        command: mongod --noauth
         networks:
             - webappnetwork
 networks:
